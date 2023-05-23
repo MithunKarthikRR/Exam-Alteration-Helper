@@ -61,7 +61,7 @@ function Home() {
             {adminEmail.map(admin => (
               <tr key={admin.id}>
                 <td>{admin.email}</td>
-                <td>Admin Action</td>
+                <td>Admin</td>
               </tr>
             ))}
           </tbody>

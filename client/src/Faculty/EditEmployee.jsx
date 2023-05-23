@@ -33,18 +33,23 @@ function EditEmployee() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		axios.put('http://localhost:8081/update/'+id, data)
+		axios.get('http://localhost:8081/fdashboard')
 		.then(res => {
-			if(res.data.Status === "Success") {
-				navigate('/fdashboard/employeedetail')
-			}
+			id = res.data.id;
+			axios.put('http://localhost:8081/update/'+id, data)
+			.then(res => {
+				if(res.data.Status === "Success") {
+					navigate('/fdashboard/employeedetail')
+				}
+			})
+			.catch(err => console.log(err));
 		})
 		.catch(err => console.log(err));
 	}
   return (
     <div className='d-flex flex-column align-items-center pt-4'>
 			<h2>Update Faculty</h2>
-			<form class="row g-3 w-50" onSubmit={handleSubmit}>
+			<form class="row g-3 w-50">
 				<div class="col-12">
 					<label for="inputName" class="form-label">Name</label>
 					<input type="text" class="form-control" id="inputName" placeholder='Enter Name' autoComplete='off' value={data.name} readOnly />

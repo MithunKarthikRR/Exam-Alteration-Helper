@@ -43,7 +43,7 @@ function Employee() {
               <th>Image</th>
               <th>Email</th>
               <th>Address</th>
-              <th>Action</th>
+              {/* <th>Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -51,14 +51,14 @@ function Employee() {
               return <tr key={index}>
                   <td>{employee.name}</td>
                   <td>{
-                    <img src={`http://localhost:3000/images/`+employee.image} alt="" className='employee_image'/>
+                    <img src={`http://localhost:3000/images/`+employee.image} alt="" className='employee_image' style={{ width: '50px', height: '50px', borderRadius: '50%' }}/>
                     }</td>
                   <td>{employee.email}</td>
                   <td>{employee.address}</td>
-                  <td>
+                  {/* <td>
                     <Link to={`/employeeEdit/`+employee.id} className='btn btn-primary btn-sm me-2'>edit</Link>
                     <button onClick={e => handleDelete(employee.id)} className='btn btn-sm btn-danger'>delete</button>
-                  </td>
+                  </td> */}
               </tr>
             })}
           </tbody>
