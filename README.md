@@ -18,7 +18,8 @@ Tech-Stack Used:
 
 Created with 💖 by :
 
-Nithin Skantha M
-Rohith P
-Mithun Karthik R R
-Mukuntan K U
+ Nithin Skantha M
+ Rohith P
+ Mithun Karthik R R
+ Mukuntan K U
+ Narendhiran P
