@@ -15,7 +15,6 @@ Tech-Stack Used:
 11. Express.js
 12. React
 
-
 Created with 💖 by :
 
  Nithin Skantha M
