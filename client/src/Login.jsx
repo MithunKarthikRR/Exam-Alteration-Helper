@@ -19,7 +19,7 @@ function Login() {
         .then(res => {
             if(res.data.Status === 'Success') {
                 navigate('/');
-                console.log("SUccess");
+                console.log("Success");
             } else {
                 setError(res.data.Error);
                 console.log("Error");

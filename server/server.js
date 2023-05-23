@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import multer from 'multer'
 import path from 'path'
+import crypto from 'crypto'
+import nodemailer from 'nodemailer'
 
 import bodyParser from 'body-parser'
 import csv from 'fast-csv'
@@ -106,7 +108,7 @@ app.delete('/delete/:id', (req, res) => {
 const verifyUser = (req, res, next) => {
     const token = req.cookies.token;
     if(!token) {
-        return res.json({Error: "You are no Authenticated"});
+        return res.json({Error: "You are not Authenticated"});
     } else {
         jwt.verify(token, "jwt-secret-key", (err, decoded) => {
             if(err) return res.json({Error: "Token wrong"});
@@ -121,23 +123,20 @@ app.get('/dashboard',verifyUser, (req, res) => {
     return res.json({Status: "Success", role: req.role, id: req.id})
 })
 
-app.get('/adminCount', (req, res) => {
-    const sql = "Select count(id) as admin from users";
-    con.query(sql, (err, result) => {
-        if(err) return res.json({Error: "Error in runnig query"});
-        return res.json(result);
-    })
+app.get('/fdashboard',verifyUser, (req, res) => {
+    return res.json({Status: "Success", role: req.role, id: req.id})
 })
-app.get('/employeeCount', (req, res) => {
-    const sql = "Select count(id) as employee from employee";
+
+app.get('/adminCount', (req, res) => {
+    const sql = "Select * from users where role = 'admin'";
     con.query(sql, (err, result) => {
         if(err) return res.json({Error: "Error in runnig query"});
         return res.json(result);
     })
 })
 
-app.get('/salary', (req, res) => {
-    const sql = "Select sum(salary) as sumOfSalary from employee";
+app.get('/employeeCount', (req, res) => {
+    const sql = "Select count(id) as employee from employee";
     con.query(sql, (err, result) => {
         if(err) return res.json({Error: "Error in runnig query"});
         return res.json(result);
@@ -167,13 +166,12 @@ app.post('/employeelogin', (req, res) => {
             bcrypt.compare(req.body.password.toString(), result[0].password, (err, response)=> {
                 if(err) return res.json({Error: "password error"});
                 if(response) {
-                    const token = jwt.sign({role: "employee", id: result[0].id}, "jwt-secret-key", {expiresIn: '1d'});
+                    const token = jwt.sign({role: "faculty", id: result[0].id}, "jwt-secret-key", {expiresIn: '1d'});
                     res.cookie('token', token);
                     return res.json({Status: "Success", id: result[0].id})
                 } else {
                     return res.json({Status: "Error", Error: "Wrong Email or Password"});
-                }
-                
+                }                
             })
             
         } else {
@@ -182,38 +180,54 @@ app.post('/employeelogin', (req, res) => {
     })
 })
 
-// app.get('/employee/:id', (req, res) => {
-//     const id = req.params.id;
-//     const sql = "SELECT * FROM employee where id = ?";
-//     con.query(sql, [id], (err, result) => {
-//         if(err) return res.json({Error: "Get employee error in sql"});
-//         return res.json({Status: "Success", Result: result})
-//     })
-// })
-
-
-
-
 app.get('/logout', (req, res) => {
     res.clearCookie('token');
     return res.json({Status: "Success"});
 })
 
 app.post('/create',upload.single('image'), (req, res) => {
-    const sql = "INSERT INTO employee (`name`,`email`,`password`) VALUES (?)";
-    bcrypt.hash(req.body.password.toString(), 10, (err, hash) => {
-        if(err) return res.json({Error: "Error in hashing password"});
-        const values = [
-            req.body.name,
-            req.body.email,
-            
-        ]
-        console.log(req.file.filename)
-        con.query(sql, [values], (err, result) => {
-            if(err) return res.json({Error: "Inside singup query"});
-            return res.json({Status: "Success"});
-        })
-    } )
+    const passwordLength = 10;
+    const randomBytes = crypto.randomBytes(passwordLength);
+    const password = randomBytes.toString('hex').slice(0, passwordLength);
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: 'STARTTLS',
+        auth: {
+          user: 'hilma.damore70@ethereal.email',
+          pass: 'FWwhfGc1mp5prjQQfM'
+        }
+      });
+
+      const mailOptions = {
+        from: 'examalthelper@outlook.com',
+        to: req.body.email,
+        subject: 'Test Email',
+        text: 'This is a test email sent from Node.js using Nodemailer.'
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          return res.json({Error: "Error in sending email"});
+        } else {
+          console.log('Email sent: ' + info.response);
+          const sql = "INSERT INTO employee (`name`,`email`,`password`) VALUES (?)";
+          bcrypt.hash(password.toString(), 10, (err, hash) => {
+              if(err) return res.json({Error: "Error in hashing password"});
+              const values = [
+                  req.body.name,
+                  req.body.email,
+                  hash
+              ]
+              con.query(sql, [values], (err, result) => {
+                  if(err) return res.json({Error: "Inside singup query"});
+                  return res.json({Status: "Success"});
+              })
+          })
+        }
+      });
 })
 
 
@@ -259,6 +273,97 @@ function uploadCsv(path,req){
     })
     stream.pipe(fileStream)
 }
+
+var email;
+app.get('/getExams/:id', (req, res) => {
+    const id = req.params.id;
+    // Fid -> Femail
+    const sql1 = "SELECT * FROM employee WHERE id = ?";
+    con.query(sql1,[id], (err, result) => {
+        if(err) console.log("Femail fetch error")
+        else email = result[0].email
+    })
+    //Femail -> resp exams
+    const sql = "SELECT * FROM examdetails WHERE facultymail = ?";
+    con.query(sql,[email], (err, result) => {
+        if(err) return res.json({Error: "Get exams error in sql"});
+        return res.json({Status: "Success", Result: result})
+    })
+})
+
+
+app.get('/examslot/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM examdetails WHERE id = ?";
+    con.query(sql,[id], (err, result) => {
+        if(err) return res.json({Error: "Get exams error in sql"});
+        else{
+            const values = [
+                result[0].date,
+                result[0].slot,
+                result[0].date,
+                result[0].facultymail
+            ]
+            const sql1 = "SELECT * FROM examdetails WHERE ((date = (?) AND slot <> (?)) OR (date <> (?))) AND facultymail <> (?) LIMIT 0, 25;";
+            con.query(sql1, values, (err, result1) => {
+                if(err) return res.json({Error: "Get exams error in sql"});
+                else{
+                    // console.log(result1)
+                    return res.json({Status: "Success", Result: result1})
+                }
+            })
+        }
+    })
+})
+
+
+app.get('/getstatus/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM employee WHERE id = ?";
+    con.query(sql,[id], (err, result) => {
+        if(err) return res.json({Error: "Get exams error in sql"});
+        else{
+            var mail = result[0].email;
+            const sql1 = "select * from examdetails where id in (SELECT texamid FROM requests WHERE fmail =(?));";
+            con.query(sql1, [mail], (err, result1) => {
+                if(err) return res.json({Error: "Get exams error in sql1"});
+                else{
+                    console.log(result1)
+                    return res.json({Status: "Success", Result: result1})
+                }
+            })
+        }
+    })
+})
+
+app.post('/setrequest/:id1/:id2/:id3', (req, res) => {
+    console.log("sdxfcgvhbjnkm")
+    const fid = req.params.id1;
+    const tid = req.params.id2;
+    const tmail = req.params.id3;
+    const sql = "SELECT * FROM examdetails WHERE id = ?";
+    con.query(sql,[fid], (err, result) => {
+        if(err) return res.json({Error: "Get exams error in sql"});
+        else{
+            var fmail = result[0].facultymail;
+            const values = [
+                fmail,
+                tmail,
+                fid,
+                tid
+            ]
+            const sql1 = "INSERT INTO requests (`fmail`,`tmail`,`fexamid`,`texamid`) VALUES (?)";
+            con.query(sql1, [values], (err, result1) => {
+                if(err) return res.json({Error: err});
+                else{
+                    console.log(result1)
+                    return res.json({Status: "Success", Result: result1})
+                }
+            })
+        }
+    })
+})
+
 
 app.listen(8081, ()=> {
     console.log("Running");
