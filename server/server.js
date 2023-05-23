@@ -185,49 +185,29 @@ app.get('/logout', (req, res) => {
     return res.json({Status: "Success"});
 })
 
-app.post('/create',upload.single('image'), (req, res) => {
+app.post('/create', (req, res) => {
+    // console.log(req.data)
+    var name = req.body.name
+    var mail = req.body.email
     const passwordLength = 10;
     const randomBytes = crypto.randomBytes(passwordLength);
     const password = randomBytes.toString('hex').slice(0, passwordLength);
-
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: 'STARTTLS',
-        auth: {
-          user: 'hilma.damore70@ethereal.email',
-          pass: 'FWwhfGc1mp5prjQQfM'
-        }
-      });
-
-      const mailOptions = {
-        from: 'examalthelper@outlook.com',
-        to: req.body.email,
-        subject: 'Test Email',
-        text: 'This is a test email sent from Node.js using Nodemailer.'
-      };
-
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-          return res.json({Error: "Error in sending email"});
-        } else {
-          console.log('Email sent: ' + info.response);
-          const sql = "INSERT INTO employee (`name`,`email`,`password`) VALUES (?)";
-          bcrypt.hash(password.toString(), 10, (err, hash) => {
-              if(err) return res.json({Error: "Error in hashing password"});
-              const values = [
-                  req.body.name,
-                  req.body.email,
-                  hash
-              ]
-              con.query(sql, [values], (err, result) => {
-                  if(err) return res.json({Error: "Inside singup query"});
-                  return res.json({Status: "Success"});
-              })
-          })
-        }
-      });
+    console.log(password);
+    const sql = "INSERT INTO employee (`name`,`email`,`password`) VALUES (?)";
+    bcrypt.hash(password.toString(), 10, (err, hash) => {
+        if(err) return res.json({Error: "Error in hashing password"});
+        const values = [
+            name,
+            mail,
+            hash
+        ]
+        console.log(values)
+        con.query(sql, [values], (err, result) => {
+            // console.log('ewsdfg')
+            if(err) return res.json({Error: "Inside singup query"});
+            return res.json({Status: "Success"});
+        })
+    })
 })
 
 
