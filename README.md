@@ -19,7 +19,6 @@ The Exam Alteration Helper is a software development project aimed at facilitati
 12. React
 
 
-
 ## 💁 Credits
 Created with 💖 by :
 - [Mithun Karthik R R](https://github.com/MithunKarthikRR) 
