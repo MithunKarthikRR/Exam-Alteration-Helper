@@ -1,7 +1,10 @@
-# Exam-Alteration-Helper
+# Exam_alteration_helper
+
+## ❗ Description
 The Exam Alteration Helper is a software development project aimed at facilitating the modification of staffs' exam allocation based on their requests and managing changes to the exam schedule. The primary objective of the system is to streamline the process of making alterations to exam assignments and schedules, ensuring efficient communication and coordination between staff members and administrators.
 
-Tech-Stack Used:
+## 💻 Tech stack used
+
 1. Git
 2. Postman
 3. Slack
@@ -16,14 +19,16 @@ Tech-Stack Used:
 12. React
 
 
-Created with 💖 by :
 
- Nithin Skantha M
- 
- Rohith P
- 
- Mithun Karthik R R
- 
- Mukuntan K U
- 
- Narendhiran P
+## 💁 Credits
+Created with 💖 by :
+- [Mithun Karthik R R](https://github.com/MithunKarthikRR) 
+- [Mukuntan K U](https://github.com/Mukuntanku) 
+- [Narendhiran P](https://github.com/NarenneraN) 
+- [Nithin Skantha M](https://github.com/MNS1007) 
+- [Rohith P](https://github.com/htihor77)
+
+## 💌 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
