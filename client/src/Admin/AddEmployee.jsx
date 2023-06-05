@@ -12,9 +12,6 @@ function AddEmployee() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(data);
-		// const formdata = new FormData();
-		// formdata.append("name", data.name);
-		// formdata.append("email", data.email);
 		axios.post('http://localhost:8081/create', data)
 		.then(res => {
 			navigate('/employee')

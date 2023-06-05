@@ -47,7 +47,7 @@ function EmployeeLogin() {
                           onChange={e => setValues({...values, password: e.target.value})} className='form-control rounded-0' />
                     </div>
                     <button type='submit' className='btn btn-success w-100 rounded-0'> Log in</button>
-                    <p>You are agree to aour terms and policies</p>
+                    {/* <p>You are agree to aour terms and policies</p> */}
                 </form>
             </div>
         </div>

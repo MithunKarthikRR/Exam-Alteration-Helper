@@ -1,19 +1,35 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Start.css'; // Import CSS file for custom styling
+import logo from './logo.png';
 function Start() {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
-    <div className='d-flex justify-content-center align-items-center vh-100 loginPage'>
-            <div className='p-3 rounded w-25 border loginForm text-center'>
-                <h2>Login As</h2>
-                <div className='d-flex justify-content-between mt-5'>
-                    <button className='btn btn-primary btn-lg' onClick={e => navigate('/employeeLogin')}>Employee</button>
-                    <button className='btn btn-success btn-lg' onClick={e => navigate('/login')}>Admin</button>
-                </div>
-            </div>
+    <div className="loginPage">
+      <h1 className="mainTitle">Exam Alteration Helper</h1>
+      <div className="loginForm">
+      <div className="d-flex justify-content-center">
+      <img src={logo} alt="Logo" className="logo" />
+      </div>
+        <div className="optionsContainer">
+          <h2>Login As</h2>
+          <div className="options">
+            <button
+              className="option employeeOption"
+              onClick={e => navigate('/employeeLogin')}
+            >
+              Employee
+            </button>
+            <button
+              className="option adminOption"
+              onClick={e => navigate('/login')}
+            >
+              Admin
+            </button>
+          </div>
         </div>
-  )
+      </div>
+    </div>
+  );
 }
-
-export default Start
+export default Start;

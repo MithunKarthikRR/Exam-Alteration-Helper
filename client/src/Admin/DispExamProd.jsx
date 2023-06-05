@@ -4,7 +4,6 @@ export function Products(props) {
     const trimmedDate = props.date.slice(0, 10);
     return(
         <div style={{ fontSize: '10px' }} className='productList'>
-            
             <div key={props.id} className='productCard'>
                 {/* <img src={props.image} alt='product-img' className='productImage'></img> */}
 
@@ -24,11 +23,9 @@ export function Products(props) {
                         <div className='productSales'>{props.starttime}     -     {props.endtime}</div>
                         <div className='productSales'>{props.slot}</div>
                     </div>
-                    {/* <div className='productTime'>{props.faculty}</div> */}
+                    <div className='productTime'>{props.faculty}</div>
 
-                    <div className="d-flex justify-content-center">
-                    <Link to={`/fdashboard/request/${props.id}`} className="btn btn-primary btn-sm me-2">Request for change</Link>
-                    </div>
+                    
                 </div>
             </div>
         </div>   

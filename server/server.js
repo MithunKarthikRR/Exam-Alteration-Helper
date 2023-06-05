@@ -186,7 +186,6 @@ app.get('/logout', (req, res) => {
 })
 
 app.post('/create', (req, res) => {
-    // console.log(req.data)
     var name = req.body.name
     var mail = req.body.email
     const passwordLength = 10;
@@ -270,7 +269,14 @@ app.get('/getExams/:id', (req, res) => {
         return res.json({Status: "Success", Result: result})
     })
 })
-
+app.get('/getAllExams', (req, res) => {
+    //Femail -> resp exams
+    const sql = "SELECT * FROM examdetails";
+    con.query(sql,(err, result) => {
+        if(err) return res.json({Error: "Get exams error in sql"});
+        return res.json({Status: "Success", Result: result})
+    })
+})
 
 app.get('/examslot/:id', (req, res) => {
     const id = req.params.id;

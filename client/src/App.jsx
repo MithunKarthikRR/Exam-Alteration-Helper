@@ -9,6 +9,7 @@ import AddEmployee from './Admin/AddEmployee'
 import Start from './Start'
 import EmployeeLogin from './EmployeeLogin'
 import Exam from './Admin/Exam'
+import DispExam from './Admin/DispExam'
 
 import FDashboard from './Faculty/FDashboard'
 import FHome from './Faculty/FHome'
@@ -28,6 +29,7 @@ function App() {
         <Route path='/employee' element={<Employee />}></Route>
         <Route path='/create' element={<AddEmployee />}></Route>
         <Route path='/exam' element={<Exam />}></Route>
+        <Route path='/dispexam' element={<DispExam />}></Route>
       </Route>
 
       <Route path='/login' element={<Login />}></Route>
